@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.namratha.focusplanbuilder.ui.theme.FocusPlanBuilderTheme
+import androidx.compose.material3.Card
+import androidx.compose.runtime.remember
 
 
 
@@ -93,16 +95,38 @@ fun FocusPlanRoute(
                 minutes != null &&
                 minutes in 10..180
 
+    var plan by remember {
+        mutableStateOf<FocusPlan?>(null)
+    }
+
     FocusPlanScreen(
         subject = subject,
         minutesText = minutesText,
+        plan = plan,
+
         onSubjectChange = { newSubject ->
             subject = newSubject
+            plan = null
         },
+
         onMinutesChange = { newMinutes ->
             minutesText = newMinutes
+            plan = null
         },
+
         canCreatePlan = canCreatePlan,
+
+        onCreatePlan = {
+            if (minutes != null) {
+                plan = FocusPlan(
+                    subject = subject.trim(),
+                    minutes = minutes,
+                    category = durationCategory(minutes),
+                    breakMinutes = recommendedBreak(minutes)
+                )
+            }
+        },
+
         modifier = modifier
     )
 }
@@ -111,9 +135,11 @@ fun FocusPlanRoute(
 fun FocusPlanScreen(
     subject: String,
     minutesText: String,
+    plan: FocusPlan?,
     onSubjectChange: (String) -> Unit,
     onMinutesChange: (String) -> Unit,
     canCreatePlan: Boolean,
+    onCreatePlan: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -181,11 +207,58 @@ fun FocusPlanScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Button(
-                onClick = { },
+                onClick = onCreatePlan,
                 enabled = canCreatePlan,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Create plan")
+            }
+        }
+
+        if (plan != null) {
+
+            Spacer(
+                modifier = Modifier.height(24.dp)
+            )
+
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp)
+                ) {
+
+                    Text(
+                        text = plan.subject,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(12.dp)
+                    )
+
+                    Text(
+                        text = "Duration: ${plan.minutes} minutes"
+                    )
+
+                    Text(
+                        text = "Category: ${plan.category}"
+                    )
+
+                    Text(
+                        text = "Recommended break: ${plan.breakMinutes} minutes"
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
+
+                    Text(
+                        text = "Study ${plan.subject} for ${plan.minutes} minutes, " +
+                                "and then take a ${plan.breakMinutes}-minute break."
+                    )
+                }
             }
         }
     }
