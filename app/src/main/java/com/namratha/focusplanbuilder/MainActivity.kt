@@ -28,6 +28,31 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.namratha.focusplanbuilder.ui.theme.FocusPlanBuilderTheme
 
+
+
+data class FocusPlan(
+    val subject: String,
+    val minutes: Int,
+    val category: String,
+    val breakMinutes: Int
+)
+
+fun durationCategory(minutes: Int): String {
+    return when {
+        minutes < 10 -> "Invalid"
+        minutes <= 29 -> "Quick review"
+        minutes <= 60 -> "Focused session"
+        else -> "Extended session"
+    }
+}
+
+fun recommendedBreak(minutes: Int): Int {
+    return when {
+        minutes < 30 -> 5
+        minutes <= 60 -> 10
+        else -> 15
+    }
+}
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +86,13 @@ fun FocusPlanRoute(
         mutableStateOf("")
     }
 
+    val minutes: Int? = minutesText.toIntOrNull()
+
+    val canCreatePlan =
+        subject.isNotBlank() &&
+                minutes != null &&
+                minutes in 10..180
+
     FocusPlanScreen(
         subject = subject,
         minutesText = minutesText,
@@ -70,6 +102,7 @@ fun FocusPlanRoute(
         onMinutesChange = { newMinutes ->
             minutesText = newMinutes
         },
+        canCreatePlan = canCreatePlan,
         modifier = modifier
     )
 }
@@ -80,6 +113,7 @@ fun FocusPlanScreen(
     minutesText: String,
     onSubjectChange: (String) -> Unit,
     onMinutesChange: (String) -> Unit,
+    canCreatePlan: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -148,6 +182,7 @@ fun FocusPlanScreen(
         ) {
             Button(
                 onClick = { },
+                enabled = canCreatePlan,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Create plan")
