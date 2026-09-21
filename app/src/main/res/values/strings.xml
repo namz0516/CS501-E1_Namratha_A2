@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Focus Plan Builder</string>
+    <string name="focus_plan_title">Focus Plan Builder</string>
+    <string name="focus_plan_instructions">Enter a subject to study and the minutes available to create a plan</string>
+
+    <string name="subject_label">Study subject</string>
+    <string name="subject_placeholder">e.g., Kotlin</string>
+
+    <string name="minutes_label">Available minutes</string>
+    <string name="minutes_placeholder">10-180</string>
+
+    <string name="create_plan">Create plan</string>
+
+    <string name="study_result">Study: %1$s</string>
+    <string name="duration_result">Duration: %1$d minutes</string>
+    <string name="category_result">Category: %1$s</string>
+    <string name="break_result">Recommended break: %1$d minutes</string>
+
+    <string name="plan_summary">Study %1$s for %2$d minutes, then take a %3$d minute break</string>
 </resources>

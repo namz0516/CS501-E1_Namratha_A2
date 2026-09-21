@@ -29,7 +29,10 @@ import androidx.compose.ui.unit.dp
 import com.namratha.focusplanbuilder.ui.theme.FocusPlanBuilderTheme
 import androidx.compose.material3.Card
 import androidx.compose.runtime.remember
-
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.res.stringResource
 
 
 data class FocusPlan(
@@ -95,7 +98,7 @@ fun FocusPlanRoute(
                 minutes != null &&
                 minutes in 10..180
 
-    var plan by remember {
+    var plan by remember{
         mutableStateOf<FocusPlan?>(null)
     }
 
@@ -145,13 +148,15 @@ fun FocusPlanScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(24.dp)
     ) {
 
         Text(
-            text = "Focus Plan Builder",
+            text = stringResource(R.string.focus_plan_title),
             style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.tertiary
         )
 
         Spacer(
@@ -159,7 +164,7 @@ fun FocusPlanScreen(
         )
 
         Text(
-            text = "Enter a study subject and the number of minutes available."
+            text = stringResource(R.string.focus_plan_instructions)
         )
 
         Spacer(
@@ -170,10 +175,10 @@ fun FocusPlanScreen(
             value = subject,
             onValueChange = onSubjectChange,
             label = {
-                Text("Study subject")
+                Text(stringResource(R.string.subject_label))
             },
             placeholder = {
-                Text("e.g., Kotlin")
+                Text(stringResource(R.string.subject_placeholder))
             },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -187,10 +192,10 @@ fun FocusPlanScreen(
             value = minutesText,
             onValueChange = onMinutesChange,
             label = {
-                Text("Available minutes")
+                Text(stringResource(R.string.minutes_label))
             },
             placeholder = {
-                Text("10–180")
+                Text(stringResource(R.string.minutes_placeholder))
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number
@@ -211,7 +216,7 @@ fun FocusPlanScreen(
                 enabled = canCreatePlan,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Create plan")
+                Text(stringResource(R.string.create_plan))
             }
         }
 
@@ -229,7 +234,10 @@ fun FocusPlanScreen(
                 ) {
 
                     Text(
-                        text = plan.subject,
+                        text = stringResource(
+                            R.string.study_result,
+                            plan.subject
+                        ),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -239,15 +247,24 @@ fun FocusPlanScreen(
                     )
 
                     Text(
-                        text = "Duration: ${plan.minutes} minutes"
+                        text = stringResource(
+                            R.string.duration_result,
+                            plan.minutes
+                        )
                     )
 
                     Text(
-                        text = "Category: ${plan.category}"
+                        text = stringResource(
+                            R.string.category_result,
+                            plan.category
+                        )
                     )
 
                     Text(
-                        text = "Recommended break: ${plan.breakMinutes} minutes"
+                        text = stringResource(
+                            R.string.break_result,
+                            plan.breakMinutes
+                        )
                     )
 
                     Spacer(
@@ -255,11 +272,70 @@ fun FocusPlanScreen(
                     )
 
                     Text(
-                        text = "Study ${plan.subject} for ${plan.minutes} minutes, " +
-                                "and then take a ${plan.breakMinutes}-minute break."
+                        text = stringResource(
+                            R.string.plan_summary,
+                            plan.subject,
+                            plan.minutes,
+                            plan.breakMinutes
+                        ),
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
         }
     }
 }
+
+
+@Preview(showBackground = true)
+@Composable
+fun LightFocusPlanScreenPreview() {
+    FocusPlanBuilderTheme(darkTheme = false) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize()
+        ) { innerPadding ->
+            FocusPlanScreen(
+                subject = "Kotlin",
+                minutesText = "30",
+                plan = FocusPlan(
+                    subject = "Kotlin",
+                    minutes = 30,
+                    category = "Focused session",
+                    breakMinutes = 10
+                ),
+                onSubjectChange = {},
+                onMinutesChange = {},
+                canCreatePlan = true,
+                onCreatePlan = {},
+                modifier = Modifier.padding(innerPadding)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DarkFocusPlanScreenPreview() {
+    FocusPlanBuilderTheme(darkTheme = true) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize()
+        ) { innerPadding ->
+            FocusPlanScreen(
+                subject = "Kotlin",
+                minutesText = "30",
+                plan = FocusPlan(
+                    subject = "Kotlin",
+                    minutes = 30,
+                    category = "Focused session",
+                    breakMinutes = 10
+                ),
+                onSubjectChange = {},
+                onMinutesChange = {},
+                canCreatePlan = true,
+                onCreatePlan = {},
+                modifier = Modifier.padding(innerPadding)
+            )
+        }
+    }
+}
+
