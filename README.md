@@ -15,7 +15,7 @@ Focus Plan Builder is a single screen Android application built using Kotlin, Je
 
 ### Screenshot:
 
-![Completed Focus Plan Builder app](./screenshot.png)
+<img src="screenshot.png" alt="Completed Focus Plan Builder app" width="300">
 
 ### State and Recomposition:
 FocusPlanRoute owns the application state, including the subject, minutes text and the generated FocusPlan. The text fields store their values as String because users may temporarily leave a field empty or enter incomplete or invalid input. Storing the minutes directly as an Int would make it harder to represent those intermediate inputs.
