@@ -20,8 +20,8 @@ Focus Plan Builder is a single screen Android application built using Kotlin, Je
 ### State and Recomposition:
 FocusPlanRoute owns the application state, including the subject, minutes text and the generated FocusPlan. The text fields store their values as String because users may temporarily leave a field empty or enter incomplete or invalid input. Storing the minutes directly as an Int would make it harder to represent those intermediate inputs.
 The app uses toIntOrNull() to convert the minutes text into an integer, unlike toInt(), which throws an exception for invalid input, toIntOrNull() returns null which allows the app to disable the Create plan button safely.
-When the user changes either of the input fields, its state updates, composes then recomposes the affected UI, recalculating canCreatePlan and updating whether the Create plan button is enabled. Editing either field also clears the previously generated plan.
-rememberSaveable preserves the subject and minutes text across configuration changes, for example, screen rotation. A local variable would be reset during recomposition and remember wouldn't preserve the inputs when the Activity is recreated. The generated plan uses remember as rememberSaveable alone won't work to preserve the state after rotation
+When the user changes either of the input fields, its state updates and Compose then recomposes the affected UI, recalculating canCreatePlan and updating whether the Create plan button is enabled. Editing either field also clears the previously generated plan.
+rememberSaveable preserves the subject and minutes text across configuration changes, for example, screen rotation. A local variable would be reset during recomposition and remember wouldn't preserve the inputs when the Activity is recreated. The generated plan uses remember, so it resets after rotation. Since FocusPlan is a custom data class, preserving it with rememberSaveable alone won't work to preserve the state after rotation, it would require a custom Saver or Parcelable
 
 ### Collaboration and Generative-AI Disclosure:
 I didn’t collaborate with anyone for this assignment. I used Gemini 3.6 Flash. I
@@ -49,7 +49,7 @@ so I focused on only preserving the user’s inputs with rememberSaveable
 
 #### -Verification:
 I verified my work by building and running the project in Android Studio on a Pixel 9
-API 24 emulator. I manually tested the required input casesblank subject, empty or
+API 24 emulator. I manually tested the required input cases blank subject, empty or
 non-numeric duration and durations outside the 10-180 minute range to confirm the Create
 Plan button remained disabled. I also tested the boundary values (10, 29, 30, 60, 61, and 
 180 minutes) to check that the session categories and recommended breaks were correct.
